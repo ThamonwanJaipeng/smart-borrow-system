@@ -1,9 +1,12 @@
-FROM node:18
+FROM python:3.11-alpine
 
 WORKDIR /app
 
-COPY . .
+COPY web /app/web
+COPY run.sh /run.sh
 
-RUN npm install
+RUN chmod +x /run.sh
 
-CMD ["node", "server.js"]
+EXPOSE 8099
+
+CMD ["/run.sh"]

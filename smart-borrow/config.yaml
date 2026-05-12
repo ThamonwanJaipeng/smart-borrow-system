@@ -1,17 +1,24 @@
-name: "Smart Borrow System"
+name: Smart Borrow System
 version: "1.0"
-slug: "smart_borrow"
-description: "Borrow system for Home Assistant"
-startup: "services"
-boot: "auto"
+slug: smart-borrow
+description: Borrow system for Home Assistant
+
+startup: services
+boot: auto
+
+panel_icon: mdi:archive
+panel_title: Borrow System
+
 host_network: true
-arch:
-  - armhf
-  - armv7
-  - aarch64
-  - amd64
-  - i386
+
 ports:
-  3000/tcp: 3000
-ports_description:
-  3000/tcp: "Backend API"
+  8099/tcp: 8099
+
+webui: "http://[HOST]:[PORT:8099]"
+
+arch:
+  - amd64
+  - aarch64
+  - armv7
+
+init: false
