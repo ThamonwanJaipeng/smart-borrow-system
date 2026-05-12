@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Borrow System</title>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; padding: 0; background: #f3f4f6; color: #111827; }
+    .page { max-width: 1000px; margin: 0 auto; padding: 32px; }
+    h1 { margin-bottom: 16px; font-size: 2rem; }
+    .card { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08); }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid #e5e7eb; }
+    th { background: #f9fafb; color: #374151; }
+    tr:nth-child(even) { background: #f8fafc; }
+    .status { font-weight: 600; display: inline-flex; padding: 4px 10px; border-radius: 999px; font-size: 0.85rem; }
+    .status.borrowed { background: #fce7f3; color: #9d174d; }
+    .status.returned { background: #d1fae5; color: #065f46; }
+    .empty { padding: 24px; text-align: center; color: #6b7280; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Smart Borrow System</h1>
+    <div class="card">
+      <p>ระบบหน้าเว็บของ Smart Borrow สามารถดูประวัติการยืมคืนได้จากตารางด้านล่าง</p>
+      <div id="content">
+        <p class="empty">กำลังโหลดข้อมูล...</p>
+      </div>
+    </div>
+  </div>
+  <script>
+    async function loadLogs() {
+      const content = document.getElementById('content');
+      try {
+        const response = await fetch('/logs');
+        if (!response.ok) throw new Error('ไม่สามารถโหลดข้อมูลได้');
+        const logs = await response.json();
+        if (!logs.length) {
+          content.innerHTML = '<p class="empty">ยังไม่มีบันทึกการยืมคืน</p>';
+          return;
+        }
+        const rows = logs.map(log => {
+          const statusClass = log.status === 'borrowed' ? 'borrowed' : 'returned';
+          return `<tr>
+            <td>${escapeHtml(log.name)}</td>
+            <td>${escapeHtml(log.item_name)}</td>
+            <td><span class="status ${statusClass}">${escapeHtml(log.status)}</span></td>
+            <td>${escapeHtml(log.borrow_time || '')}</td>
+          </tr>`;
+        }).join('');
+        content.innerHTML = `
+          <table>
+            <thead>
+              <tr>
+                <th>ชื่อ</th>
+                <th>รายการ</th>
+                <th>สถานะ</th>
+                <th>เวลายืม</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        `;
+      } catch (error) {
+        content.innerHTML = '<p class="empty">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
+        console.error(error);
+      }
+    }
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"]+/g, match => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[match]));
+    }
+    loadLogs();
+  </script>
+</body>
+</html>
