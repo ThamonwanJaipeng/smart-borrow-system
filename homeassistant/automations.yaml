@@ -1,0 +1,31 @@
+- alias: Borrow Item
+
+  trigger:
+
+    - platform: state
+      entity_id: sensor.face_name
+
+  condition:
+
+    - condition: template
+      value_template: >
+        {{ states('sensor.face_name') != 'unknown' }}
+
+  action:
+
+    - service: rest_command.borrow_item
+
+      data:
+
+        user_id: 1
+        item_id: 1
+
+    - service: persistent_notification.create
+
+      data:
+
+        title: "Borrow System"
+
+        message: >
+          {{ states('sensor.face_name') }}
+          borrowed notebook

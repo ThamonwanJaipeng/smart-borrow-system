@@ -1,0 +1,32 @@
+title: Smart Borrow System
+
+views:
+
+  - title: Main
+    path: main
+
+    cards:
+
+      - type: entities
+
+        title: Face Detection
+
+        entities:
+          - sensor.face_name
+          - sensor.current_item
+
+      - type: history-graph
+
+        title: Borrow History
+
+        entities:
+          - sensor.face_name
+
+      - type: markdown
+
+        content: |
+
+          # Smart Borrow System
+
+          Face Recognition
+          + Home Assistant

@@ -1,0 +1,22 @@
+version: "3.3"
+
+services:
+
+  double-take:
+
+    container_name: double-take
+
+    image: jakowenko/double-take
+
+    restart: unless-stopped
+
+    ports:
+      - "3001:3000"
+
+    environment:
+
+      MQTT_HOST: 192.168.1.100
+      MQTT_PORT: 1883
+
+    volumes:
+      - ./storage:/.storage

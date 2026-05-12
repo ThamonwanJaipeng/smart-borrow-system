@@ -1,0 +1,46 @@
+default_config:
+
+mqtt:
+  broker: 192.168.1.100
+  port: 1883
+
+sensor:
+
+  - platform: mqtt
+    name: "Face Name"
+    state_topic: "home/face"
+
+  - platform: mqtt
+    name: "Current Item"
+    state_topic: "home/item"
+
+rest_command:
+
+  borrow_item:
+
+    url: "http://192.168.1.100:3000/borrow"
+
+    method: POST
+
+    headers:
+      content-type: "application/json"
+
+    payload: >
+      {
+        "user_id": "{{ user_id }}",
+        "item_id": "{{ item_id }}"
+      }
+
+  return_item:
+
+    url: "http://192.168.1.100:3000/return"
+
+    method: POST
+
+    headers:
+      content-type: "application/json"
+
+    payload: >
+      {
+        "item_id": "{{ item_id }}"
+      }
