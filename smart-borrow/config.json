@@ -13,5 +13,13 @@
 
   "ports_description": {
     "3000/tcp": "Backend API"
-  }
+  },
+
+  "arch": [
+    "armhf",
+    "armv7",
+    "aarch64",
+    "amd64",
+    "i386"
+  ]
 }
