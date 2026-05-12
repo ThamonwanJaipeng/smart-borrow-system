@@ -1,73 +1,186 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Smart Borrow System</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
+<title>Smart Borrow System</title>
 
-    body{
-      background:#111827;
-      color:white;
-      font-family:Arial;
-      padding:40px;
-    }
+<style>
 
-    .card{
-      background:#1f2937;
-      padding:30px;
-      border-radius:20px;
-      max-width:500px;
-      margin:auto;
-      box-shadow:0 0 20px rgba(0,0,0,.5);
-    }
+body{
+    margin:0;
+    font-family:Arial;
+    background:#081225;
+    color:white;
+}
 
-    h1{
-      color:#38bdf8;
-    }
+.container{
+    width:400px;
+    margin:80px auto;
+    background:#1b263b;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 0 20px rgba(0,0,0,.5);
+}
 
-    button{
-      background:#06b6d4;
-      color:white;
-      border:none;
-      padding:12px 20px;
-      border-radius:10px;
-      cursor:pointer;
-      margin-top:20px;
-      width:100%;
-      font-size:18px;
-    }
+h1{
+    color:#38bdf8;
+}
 
-    input{
-      width:100%;
-      padding:12px;
-      border-radius:10px;
-      border:none;
-      margin-top:10px;
-      margin-bottom:10px;
-    }
+input{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    margin-top:15px;
+    box-sizing:border-box;
+}
 
-  </style>
+button{
+    width:100%;
+    padding:15px;
+    margin-top:20px;
+    border:none;
+    border-radius:10px;
+    background:#06b6d4;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#0891b2;
+}
+
+.status{
+    margin-top:20px;
+    text-align:center;
+}
+
+</style>
 
 </head>
 
 <body>
 
-  <div class="card">
+<div class="container">
 
-    <h1>📦 Smart Borrow System</h1>
+<h1>📦 Smart Borrow System</h1>
 
-    <p>ระบบยืมอุปกรณ์บน Home Assistant</p>
+<p>ระบบยืมอุปกรณ์เชื่อม Home Assistant</p>
 
-    <input type="text" placeholder="ชื่อผู้ยืม">
+<input id="borrower" type="text" placeholder="ชื่อผู้ยืม">
 
-    <input type="text" placeholder="รายการอุปกรณ์">
+<input id="item" type="text" placeholder="รายการอุปกรณ์">
 
-    <button>ยืนยันการยืม</button>
+<button onclick="borrowItem()">
+ยืนยันการยืม
+</button>
 
-  </div>
+<div class="status" id="status"></div>
+
+</div>
+
+<script>
+
+//////////////////////////////////////////////////////
+// CONFIG
+//////////////////////////////////////////////////////
+
+const HA_URL = "http://homeassistant.local:8123";
+
+const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI1YmQ0NjA5MGExNWI0ZTNkOTFiNmJjMDE2YWE3MjkxNSIsImlhdCI6MTc3ODU3MTQzNiwiZXhwIjoyMDkzOTMxNDM2fQ.lK2-9bB_qf3MRGFCs5TCvYVNJnquIaHlLeSpQZJFhmA";
+
+//////////////////////////////////////////////////////
+// BORROW FUNCTION
+//////////////////////////////////////////////////////
+
+async function borrowItem(){
+
+    const borrower =
+        document.getElementById("borrower").value;
+
+    const item =
+        document.getElementById("item").value;
+
+    //////////////////////////////////////////////////
+    // UPDATE BORROWER NAME
+    //////////////////////////////////////////////////
+
+    await fetch(
+        `${HA_URL}/api/states/input_text.borrower_name`,
+        {
+            method:"POST",
+
+            headers:{
+                "Authorization":
+                    `Bearer ${TOKEN}`,
+
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+                state: borrower
+            })
+        }
+    );
+
+    //////////////////////////////////////////////////
+    // UPDATE ITEM
+    //////////////////////////////////////////////////
+
+    await fetch(
+        `${HA_URL}/api/states/input_select.borrow_item`,
+        {
+            method:"POST",
+
+            headers:{
+                "Authorization":
+                    `Bearer ${TOKEN}`,
+
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+                state: item
+            })
+        }
+    );
+
+    //////////////////////////////////////////////////
+    // UPDATE STATUS
+    //////////////////////////////////////////////////
+
+    await fetch(
+        `${HA_URL}/api/states/input_select.borrow_status`,
+        {
+            method:"POST",
+
+            headers:{
+                "Authorization":
+                    `Bearer ${TOKEN}`,
+
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+                state:"ถูกยืม"
+            })
+        }
+    );
+
+    //////////////////////////////////////////////////
+    // UI STATUS
+    //////////////////////////////////////////////////
+
+    document.getElementById("status").innerHTML =
+        "✅ บันทึกข้อมูลเรียบร้อย";
+
+}
+
+</script>
 
 </body>
 </html>
