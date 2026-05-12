@@ -1,0 +1,17 @@
+{
+  "name": "Smart Borrow System",
+  "version": "1.0",
+  "slug": "smart_borrow",
+  "description": "Borrow system for Home Assistant",
+  "startup": "services",
+  "boot": "auto",
+  "host_network": true,
+
+  "ports": {
+    "3000/tcp": 3000
+  },
+
+  "ports_description": {
+    "3000/tcp": "Backend API"
+  }
+}
